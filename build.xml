@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="no.itera.lego.HelloWorld" default="upload">
-    <!-- <property file="local.properties" /> -->
-    <property file="build.properties" />
+<project name="no.itera.lego.Main" default="upload">
 
-    <path id="libraries.path">    
-        <fileset dir="${ev3.home}/lib">
+    <property file="build.properties"/>
+
+    <path id="libraries.path">
+        <fileset dir="${lejos.dir}/lib">
             <include name="**/*.jar"/>
         </fileset>
     </path>
 
     <condition property="isUnixOrMac">
         <or>
-            <os family="unix" />
-            <os family="mac" />
+            <os family="unix"/>
+            <os family="mac"/>
         </or>
     </condition>
     <condition property="isWindows">
-        <os family="windows" />
+        <os family="windows"/>
     </condition>
 
     <target name="clean" description="delete old files">
@@ -41,7 +41,7 @@
 
     <target name="compile" depends="clean" description="compile the source ">
         <!-- Compile the java code from ${source.dir} to ${classes.dir}  -->
-        <mkdir dir="${classes.dir}" />
+        <mkdir dir="${classes.dir}"/>
         <javac
             srcdir="${source.dir}"
             includes="${source.include}"
@@ -55,9 +55,9 @@
             includeJavaRuntime="false"
             verbose="false"
         >
-            <classpath refid="libraries.path" />
+            <classpath refid="libraries.path"/>
             <!-- enable warnings -->
-            <compilerarg value="-Xlint:${source.warn}" />
+            <compilerarg value="-Xlint:${source.warn}"/>
         </javac>
     </target>
 
@@ -67,29 +67,29 @@
                 <attribute name="Main-Class" value="${main.class}"/>
                 <attribute name="Class-Path" value="${class.path}"/>
             </manifest>
-        </jar>  
+        </jar>
     </target>
 
     <target name="upload" depends="jar">
-        <scp todir="${credentials}@${ev3.host}:${programs.dir}" trust="true" password="">
+        <scp todir="${device.user}@${device.host}:${device.dir}" trust="true" password="">
             <fileset file="${output.jar}"/>
         </scp>
     </target>
 
     <target name="run">
         <sshexec
-            host="${ev3.host}"
-            username="${credentials}"
+            host="${device.host}"
+            username="${device.user}"
             password=""
             trust="true"
-            command="jrun -cp ${programs.dir}/${output.jar} lejos.internal.ev3.EV3Wrapper ${main.class}"
+            command="jrun -cp ${device.dir}/${output.jar} lejos.internal.ev3.EV3Wrapper ${main.class}"
         />
     </target>
 
     <target name="stop">
         <sshexec
-            host="${ev3.host}"
-            username="${credentials}"
+            host="${device.host}"
+            username="${device.user}"
             password=""
             trust="true"
             command="kill $(ps -w | grep '[j]ava.*${output.jar}' | awk '{print $1}')"
@@ -98,10 +98,10 @@
 
     <!-- generate javadocs -->
     <target name="docs" description="generate javadocs">
-        <delete dir="${docs.dir}" />
-        <mkdir dir="${docs.dir}" />
+        <delete dir="${javadoc.dir}"/>
+        <mkdir dir="${javadoc.dir}"/>
         <javadoc
-            destdir="${docs.dir}"
+            destdir="${javadoc.dir}"
             source="${source.version}"
             encoding="${source.encoding}"
             charset="utf-8"
@@ -111,7 +111,7 @@
             windowtitle="Project documentation"
             verbose="false"
         >
-            <classpath refid="libraries.path" />
+            <classpath refid="libraries.path"/>
 
             <packageset dir="${source.dir}"
                 includes="${source.include}"

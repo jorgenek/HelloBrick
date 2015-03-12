@@ -1,5 +1,9 @@
+#System files
 .DS_Store
-*.jar
 
-leJOS*
-build/
+# Downloaded libraries
+/leJOS*
+
+# Generated files
+/build
+*.jar
